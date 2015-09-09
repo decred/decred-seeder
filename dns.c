@@ -11,6 +11,7 @@
 #include <time.h>
 #include <ctype.h>
 #include <unistd.h>
+#include <err.h>
 
 #include "dns.h"
 
@@ -380,33 +381,34 @@ error:
 static int listenSocket = -1;
 
 int dnsserver(dns_opt_t *opt) {
-  struct sockaddr_in6 si_other;
+  struct sockaddr_in si_other;
   int senderSocket = -1;
-  senderSocket = socket(AF_INET6, SOCK_DGRAM, IPPROTO_UDP);
+  senderSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
   if (senderSocket == -1) 
     return -3;
 
   int replySocket;
   if (listenSocket == -1) {
-    struct sockaddr_in6 si_me;
-    if ((listenSocket=socket(AF_INET6, SOCK_DGRAM, IPPROTO_UDP))==-1) {
+    struct sockaddr_in si_me;
+    if ((listenSocket=socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP))==-1) {
       listenSocket = -1;
       return -1;
     }
-    replySocket = socket(AF_INET6, SOCK_DGRAM, IPPROTO_UDP);
+    replySocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if (replySocket == -1)
     {
       close(listenSocket);
       return -1;
     }
     int sockopt = 1;
-    setsockopt(listenSocket, IPPROTO_IPV6, DSTADDR_SOCKOPT, &sockopt, sizeof sockopt);
-    memset((char *) &si_me, 0, sizeof(si_me));
-    si_me.sin6_family = AF_INET6;
-    si_me.sin6_port = htons(opt->port);
-    si_me.sin6_addr = in6addr_any;
+    memset(&si_me, 0, sizeof(si_me));
+    si_me.sin_family = AF_INET;
+    si_me.sin_port = htons(opt->port);
+    const char *ip = "127.0.0.1";
+    if (inet_pton(AF_INET, ip, &si_me.sin_addr) != 1)
+	err(1, "inet_ntop");
     if (bind(listenSocket, (struct sockaddr*)&si_me, sizeof(si_me))==-1)
-      return -2;
+	err(1, "bind");
   }
   
   unsigned char inbuf[BUFLEN], outbuf[BUFLEN];

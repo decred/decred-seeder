@@ -6,6 +6,10 @@
 #include <openssl/sha.h>
 #include <stdarg.h>
 
+extern "C" {
+#include "blake256.h"
+}
+
 #include "uint256.h"
 
 #define loop                for (;;)
@@ -70,6 +74,19 @@ template<typename T1> inline uint256 Hash(const T1 pbegin, const T1 pend)
     uint256 hash2;
     SHA256((unsigned char*)&hash1, sizeof(hash1), (unsigned char*)&hash2);
     return hash2;
+}
+
+static uint32_t HashFuncB(const uint8_t *str, uint64_t len) {
+    uint32_t res;
+    unsigned char out[32];
+    state256 S;
+
+    blake256_init(&S);
+    blake256_update(&S, str, len);
+    blake256_final(&S, out);
+
+    memcpy(&res, out, sizeof(res));
+    return htole32(res);
 }
 
 void static inline Sleep(int nMilliSec) {
