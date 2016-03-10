@@ -5,8 +5,8 @@ LDFLAGS = $(CXXFLAGS)
 # OpenBSD and Bitrig require egcc and eg++
 # System compiler on OpenBSD is too old and clang on gcc
 # produces broken exectuable.
-CC = egcc
-CXX = eg++
+CC ?= gcc
+CXX ?= g++
 
 dnsseed: dns.o bitcoin.o netbase.o protocol.o db.o main.o util.o blake256.o
 	${CXX} -pthread $(LDFLAGS) -o dnsseed dns.o bitcoin.o netbase.o protocol.o db.o main.o util.o blake256.o -lcrypto
