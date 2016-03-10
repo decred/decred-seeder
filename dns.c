@@ -404,7 +404,7 @@ int dnsserver(dns_opt_t *opt) {
     memset(&si_me, 0, sizeof(si_me));
     si_me.sin_family = AF_INET;
     si_me.sin_port = htons(opt->port);
-    const char *ip = "127.0.0.1";
+    const char *ip = "127.0.0.1"; // to listen on all interfaces, change to 0.0.0.0
     if (inet_pton(AF_INET, ip, &si_me.sin_addr) != 1)
 	err(1, "inet_ntop");
     if (bind(listenSocket, (struct sockaddr*)&si_me, sizeof(si_me))==-1)
