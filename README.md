@@ -14,7 +14,7 @@ Features:
 
 ### Requirements
 
-Decred-seeder requires Boost and SSL.  On Debian-based systems these 
+Decred-seeder requires Boost and SSL.  On Debian-based systems these
 are typically installed by,
 
     sudo apt-get install build-essential libboost-all-dev libssl-dev
@@ -26,7 +26,7 @@ need an authorative NS record in example.com's domain record, pointing
 to for example vps.example.com:
 
     $ dig -t NS dnsseed.example.com
-    
+
     ;; ANSWER SECTION
     dnsseed.example.com.   86400    IN      NS     vps.example.com.
 
@@ -34,7 +34,7 @@ On the system vps.example.com, you can now run `dnsseed`:
 
     ./dnsseed -h dnsseed.example.com -n vps.example.com -m root.example.com
 
-To report SOA records, provide an e-mail address (with the "@" part replaced by ".") 
+To report SOA records, provide an e-mail address (with the "@" part replaced by ".")
 using -m.
 
 ### Building
@@ -46,7 +46,7 @@ This will produce the `dnsseed` binary executable.
 
 ### Running as non-root
 
-A DNS server typically listens on UPD port 53.  However, to bind to a priviledged port 
+A DNS server typically listens on UDP port 53.  However, to bind to a priviledged port
 (i.e. a port less than 1024), it is necessary to do one of the following:
 
  1. Run as root (not recommended).
@@ -55,13 +55,14 @@ A DNS server typically listens on UPD port 53.  However, to bind to a priviledge
 
 To use an iptables rule (Linux only) to redirect it to a non-privileged port:
 
-    iptables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-port 5353
+    sysctl net.ipv4.conf.all.route_localnet=1
+    iptables iptables -t nat -A PREROUTING -i eth0 -p udp -m udp --dport 53 -j DNAT --to-destination 127.0.0.1:5353
 
 If properly configured, this will allow you to run dnsseed in userspace, using
 the `-p 5353` option.
 
-Alternatively, non-root binding to privileged ports is possible on Linux supporting 
+Alternatively, non-root binding to privileged ports is possible on Linux supporting
 "POSIX capabilities".  If the `setcap` and `getcap` commands are available,
 
     sudo setcap cap_net_bind_service=+ep /path/to/dnsseed
-    
+
