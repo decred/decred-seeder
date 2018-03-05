@@ -43,6 +43,9 @@ using -m.
 
 This will produce the `dnsseed` binary executable.
 
+To build statically (useful for running on minimal debian servers that may not have all of the required libs installed):
+
+    STATIC="-static" make
 
 ### Running as non-root
 

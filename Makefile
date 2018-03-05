@@ -1,5 +1,6 @@
 INCDIR ?= -I /usr/local/include
-CXXFLAGS = -static -Wno-everything -O3 -g0 ${INCDIR}
+STATIC ?=
+CXXFLAGS = $(STATIC) -Wno-everything -O3 -g0 ${INCDIR}
 LDFLAGS = $(CXXFLAGS)
 
 # OpenBSD and Bitrig require egcc and eg++
