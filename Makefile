@@ -12,14 +12,14 @@ CXX ?= eg++
 dnsseed: dns.o bitcoin.o netbase.o protocol.o db.o main.o util.o blake256.o
 	${CXX} -pthread $(LDFLAGS) -o dnsseed dns.o bitcoin.o netbase.o protocol.o db.o main.o util.o blake256.o -lcrypto
 
-%.o: %.cpp bitcoin.h netbase.h protocol.h db.h serialize.h uint256.h util.h blake.h blake256.h
-	${CXX} -pthread $(CXXFLAGS) -Wno-invalid-offsetof -c -o $@ $<
+%.o: %.cpp bitcoin.h netbase.h protocol.h db.h serialize.h uint256.h util.h
+	${CXX} -std=c++11 -pthread $(CXXFLAGS) -Wall -Wno-unused -Wno-sign-compare -Wno-reorder -Wno-comment -c -o $@ $<
 
-%.o: %.c blake.h
+%.o: %.c blake.h blake256.h
 	${CC} $(CXXFLAGS) -c -o $@ $<
 
 dns.o: dns.c
-	${CC} -pthread -std=c99 $(CXXFLAGS) dns.c -c -o dns.o
+	${CC} -pthread -std=c99 $(CXXFLAGS) dns.c -Wall -c -o dns.o
 
 %.o: %.cpp
 
