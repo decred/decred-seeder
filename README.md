@@ -22,7 +22,7 @@ are typically installed by,
 ### Usage
 
 Assuming you want to run a DNS seed on dnsseed.example.com, you will
-need an authorative NS record in example.com's domain record, pointing
+need an authoritative NS record in example.com's domain record, pointing
 to for example vps.example.com:
 
     $ dig -t NS dnsseed.example.com
@@ -49,11 +49,11 @@ To build statically (useful for running on minimal debian servers that may not h
 
 ### Running as non-root
 
-A DNS server typically listens on UDP port 53.  However, to bind to a priviledged port
+A DNS server typically listens on UDP port 53.  However, to bind to a privileged port
 (i.e. a port less than 1024), it is necessary to do one of the following:
 
  1. Run as root (not recommended).
- 2. Redirect port 53 to a non-priviledged port, such as with iptables.
+ 2. Redirect port 53 to a non-privileged port, such as with iptables.
  3. Use POSIX capabilities (in Linux with support) to allow binding.
 
 To use an iptables rule (Linux only) to redirect it to a non-privileged port:
